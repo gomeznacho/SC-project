@@ -13,9 +13,9 @@ public class Curso {
 
     private String nombre;
 
-    @JsonIgnoreProperties(value="curso")
+ /*   @JsonIgnoreProperties(value="curso")
     @OneToMany(mappedBy="curso")
-    private List<Pregunta> preguntas;
+    private List<Pregunta> preguntas;*/
 
     @JsonIgnoreProperties(value="curso")
     @OneToMany(mappedBy="curso")
@@ -44,13 +44,13 @@ public class Curso {
         this.nombre = nombre;
     }
 
-    public List<Pregunta> getPreguntas() {
+/*    public List<Pregunta> getPreguntas() {
         return preguntas;
     }
 
     public void setPreguntas(List<Pregunta> preguntas) {
         this.preguntas = preguntas;
-    }
+    }*/
 
     public List<Tema> getTemas() {
         return temas;
@@ -65,7 +65,7 @@ public class Curso {
         return "Curso{" +
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
-                ", preguntas=" + preguntas +
+           //     ", preguntas=" + preguntas +
                 ", temas=" + temas +
                 '}';
     }

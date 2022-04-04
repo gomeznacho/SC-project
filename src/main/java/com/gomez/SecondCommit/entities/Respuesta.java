@@ -1,9 +1,14 @@
 package com.gomez.SecondCommit.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.gomez.SecondCommit.repositories.PreguntaRepository;
+import com.gomez.SecondCommit.services.PreguntaService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class Respuesta {
@@ -16,40 +21,49 @@ public class Respuesta {
 
     private LocalDateTime fecha;
 
-    private Boolean verificado;
+    private Boolean fijado;
 
-    @JsonIgnoreProperties(value="respuestas")
+    @JsonIgnoreProperties(value={"respuestas", "preguntas"})
     @ManyToOne
     @JoinColumn(name="usuario_id", foreignKey = @ForeignKey(name = "fk_respuesta_usuario"))
     private Usuario usuario;
 
-    @JsonIgnoreProperties(value="respuestas")
+    @JsonIgnoreProperties(value= {"respuestas", "discusion"})
     @ManyToOne
-    @JoinColumn(name="pregunta_id", foreignKey = @ForeignKey(name = "fk_respuesta_pregunta"))
+    @JoinColumn(name="pregunta_id", foreignKey = @ForeignKey(name = "fk_respuesta_pregunta"), nullable=false)
     private Pregunta pregunta;
 
     @JsonIgnoreProperties(value="respuestas")
-    @ManyToOne
-    @JoinColumn(name="voto_id", foreignKey = @ForeignKey(name = "fk_respuesta_voto"))
-    private Voto voto;
+    @OneToMany
+    //@JoinColumn(name="voto_id", foreignKey = @ForeignKey(name = "fk_respuesta_voto"))
+    @JoinTable(name = "respuesta_voto",
+            joinColumns = {
+                    @JoinColumn(name = "respuesta_id", foreignKey=@ForeignKey(name="fk_respuesta_id"))
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "voto_id", foreignKey=@ForeignKey(name="fk_voto_id")) })
+    private List<Voto> votos;
 
-    @JsonIgnoreProperties(value="respuestas")
+    @JsonIgnore
+    @JsonIgnoreProperties(value= {"preguntas"})
     @ManyToOne
     @JoinColumn(name="tema_id", foreignKey = @ForeignKey(name = "fk_respuesta_tema"))
     private Tema tema;
 
-    @JsonIgnoreProperties(value="respuestas")
+/*    @JsonIgnoreProperties(value= {"respuestas"})
     @ManyToOne
     @JoinColumn(name="discusion_id", foreignKey=@ForeignKey(name = "fk_respuesta_discusion"))
-    private Discusion discusion;
+    private Discusion discusion;*/
 
     public Respuesta() {
     }
 
-    public Respuesta(Long id, String descripcion, LocalDateTime fecha) {
+    public Respuesta(Long id, String descripcion) {
         this.id = id;
         this.descripcion = descripcion;
-        this.fecha = fecha;
+        this.fecha = LocalDateTime.now();
+        this.fijado = false;
+
     }
 
     public Long getId() {
@@ -76,12 +90,12 @@ public class Respuesta {
         this.fecha = fecha;
     }
 
-    public Boolean getVerificado() {
-        return verificado;
+    public Boolean getFijado() {
+        return fijado;
     }
 
-    public void setVerificado(Boolean verificado) {
-        this.verificado = verificado;
+    public void setFijado(Boolean fijado) {
+        this.fijado = fijado;
     }
 
     public Usuario getUsuario() {
@@ -96,16 +110,17 @@ public class Respuesta {
         return pregunta;
     }
 
+
     public void setPregunta(Pregunta pregunta) {
         this.pregunta = pregunta;
     }
 
-    public Voto getVoto() {
-        return voto;
+    public List<Voto> getVotos() {
+        return votos;
     }
 
-    public void setVoto(Voto voto) {
-        this.voto = voto;
+    public void setVotos(List<Voto> votos) {
+        this.votos = votos;
     }
 
     public Tema getTema() {
@@ -116,13 +131,13 @@ public class Respuesta {
         this.tema = tema;
     }
 
-    public Discusion getDiscusion() {
+/*    public Discusion getDiscusion() {
         return discusion;
     }
 
     public void setDiscusion(Discusion discusion) {
         this.discusion = discusion;
-    }
+    }*/
 
     @Override
     public String toString() {
@@ -130,12 +145,12 @@ public class Respuesta {
                 "id=" + id +
                 ", descripcion='" + descripcion + '\'' +
                 ", fecha=" + fecha +
-                ", verificado=" + verificado +
+                ", verificado=" + fijado +
                 ", usuario=" + usuario +
                 ", pregunta=" + pregunta +
-                ", voto=" + voto +
+                ", voto=" + votos +
                 ", tema=" + tema +
-                ", discusion=" + discusion +
+/*                ", discusion=" + discusion +*/
                 '}';
     }
 }

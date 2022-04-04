@@ -1,3 +1,4 @@
+/*
 package com.gomez.SecondCommit.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -73,3 +74,4 @@ public class Discusion {
                 '}';
     }
 }
+*/

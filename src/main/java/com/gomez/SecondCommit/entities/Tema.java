@@ -3,7 +3,6 @@ package com.gomez.SecondCommit.entities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,21 +17,26 @@ public class Tema {
     @Enumerated(EnumType.STRING)
     private Categoria categoria;
 
+    @Column(columnDefinition = "boolean default false")
+    private Boolean fijado;
+
+
+    @JsonIgnoreProperties(value={"preguntas", "temas"})
     @ManyToOne
     @JoinColumn(name="curso_id", foreignKey = @ForeignKey(name="fk_tema_curso"))
     private Curso curso;
 
-    @JsonIgnoreProperties(value="tema")
+/*    @JsonIgnoreProperties(value="tema")
     @OneToMany(mappedBy = "tema")
-    private List<Respuesta> respuestas;
+    private List<Respuesta> respuestas;*/
 
     @JsonIgnoreProperties(value="tema")
     @OneToMany(mappedBy = "tema")
     private List<Pregunta> preguntas;
 
-    @JsonIgnoreProperties(value="tema")
+/*    @JsonIgnoreProperties(value="tema")
     @OneToMany(mappedBy = "tema")
-    private List<Discusion> discusion;
+    private List<Discusion> discusiones;*/
 
     public Tema() {
 
@@ -42,6 +46,7 @@ public class Tema {
         this.id = id;
         this.nombre = nombre;
         this.categoria = categoria;
+        this.fijado = false;
     }
 
     public Long getId() {
@@ -68,6 +73,14 @@ public class Tema {
         this.categoria = categoria;
     }
 
+    public Boolean getFijado() {
+        return fijado;
+    }
+
+    public void setFijado(Boolean fijado) {
+        this.fijado = fijado;
+    }
+
     public Curso getCurso() {
         return curso;
     }
@@ -76,13 +89,13 @@ public class Tema {
         this.curso = curso;
     }
 
-    public List<Respuesta> getRespuestas() {
+/*    public List<Respuesta> getRespuestas() {
         return respuestas;
     }
 
     public void setRespuestas(List<Respuesta> respuestas) {
         this.respuestas = respuestas;
-    }
+    }*/
 
     public List<Pregunta> getPreguntas() {
         return preguntas;
@@ -91,14 +104,16 @@ public class Tema {
     public void setPreguntas(List<Pregunta> preguntas) {
         this.preguntas = preguntas;
     }
+/*
 
     public List<Discusion> getDiscusiones() {
-        return discusion;
+        return discusiones;
     }
 
     public void setDiscusiones(List<Discusion> discusiones) {
-        this.discusion = discusiones;
+        this.discusiones = discusiones;
     }
+*/
 
     @Override
     public String toString() {
@@ -107,7 +122,7 @@ public class Tema {
                 ", nombre='" + nombre + '\'' +
                 ", categoria=" + categoria +
                 ", curso=" + curso +
-                ", respuestas=" + respuestas +
+/*                ", respuestas=" + respuestas +*/
                 ", preguntas=" + preguntas +
                 '}';
     }

@@ -35,7 +35,8 @@ public class Usuario implements Serializable {
     private List<Pregunta> preguntas;
 
     @JsonIgnoreProperties(value="usuario")
-    @OneToMany(mappedBy = "usuario")
+    @OneToMany
+    //@JoinColumn(name="votos", foreignKey=@ForeignKey(name="fk_usuario_votos"))
     private List<Voto> votos;
 
     @JsonIgnoreProperties(value="usuario")

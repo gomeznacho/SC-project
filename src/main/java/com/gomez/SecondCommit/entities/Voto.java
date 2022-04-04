@@ -15,15 +15,39 @@ public class Voto {
     private Boolean likeDislike;
 
     @ManyToOne
-    @JoinColumn(name="usuario_id", foreignKey = @ForeignKey(name = "fk_voto_usuario"))
+   // @JoinColumn(name="usuario_id", foreignKey = @ForeignKey(name = "fk_voto_usuario"))
     private Usuario usuario;
+/*
+   // @JsonIgnoreProperties(value="voto")
+    @ManyToOne(targetEntity = Respuesta.class)
+    private Respuesta respuesta;
 
-    @JsonIgnoreProperties(value="voto")
-    @OneToMany(mappedBy = "voto")
-    private List<Respuesta> respuestas;
+    //@JsonIgnoreProperties(value="voto")
+    @ManyToOne(targetEntity =Pregunta.class)
+    private Pregunta pregunta;
+*/
 
-    @JsonIgnoreProperties(value="voto")
-    @OneToMany(mappedBy = "usuario")
-    private List<Pregunta> preguntas;
+    public Voto() {
+    }
 
+    public Voto(Long id, Boolean likeDislike) {
+        this.id = id;
+        this.likeDislike = likeDislike;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Boolean getLikeDislike() {
+        return likeDislike;
+    }
+
+    public void setLikeDislike(Boolean likeDislike) {
+        this.likeDislike = likeDislike;
+    }
 }

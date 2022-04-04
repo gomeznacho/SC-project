@@ -1,6 +1,5 @@
 package com.gomez.SecondCommit.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -23,49 +22,65 @@ public class Pregunta {
     @Enumerated(EnumType.STRING)
     private Categoria categoria;
 
-    @JsonIgnoreProperties(value="preguntas")
+    private Boolean fijado;
+
+
+    @JsonIgnoreProperties(value= {"preguntas", "respuestas"})
     @ManyToOne
     @JoinColumn(name="usuario_id", foreignKey = @ForeignKey(name = "fk_pregunta_usuario"))
     private Usuario usuario;
 
-    @JsonIgnoreProperties(value="preguntas")
+    /*@JsonIgnoreProperties(value={"preguntas", "temas"})
     @ManyToOne
     @JoinColumn(name="curso_id", foreignKey = @ForeignKey(name = "fk_pregunta_curso"))
-    private Curso curso;
+    private Curso curso;*/
 
-    @JsonIgnoreProperties(value="preguntas")
+    @JsonIgnoreProperties(value= {"preguntas", "discusiones"})
     @ManyToOne
     @JoinColumn(name="tema_id", foreignKey = @ForeignKey(name = "fk_pregunta_tema"))
     private Tema tema;
 
     @JsonIgnoreProperties(value="preguntas")
-    @ManyToOne
-    @JoinColumn(name="voto_id", foreignKey = @ForeignKey(name = "fk_pregunta_voto"))
-    private Voto voto;
+    @OneToMany
+    @JoinTable(name = "pregunta_voto",
+            joinColumns = {
+                    @JoinColumn(name = "pregunta_id", foreignKey=@ForeignKey(name="fk_pregunta_id"))
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "voto_id", foreignKey=@ForeignKey(name="fk_voto_id")) })
+    private List<Voto> votos;
 
-    @JsonIgnoreProperties(value={"preguntas"})
-    @OneToMany(mappedBy = "pregunta")
+    @JsonIgnoreProperties(value={"pregunta"})
+    @OneToMany(mappedBy="pregunta")
+    //@JoinColumn(name="respuestas", foreignKey=@ForeignKey(name="fk_pregunta_respuestas"))
     private List<Respuesta> respuestas;
+
+    //@GeneratedValue(strategy = GenerationType.)
+    //private Integer totalRespuestas;
 
     @JsonIgnoreProperties(value="pregunta")
     @OneToMany(mappedBy = "pregunta")
     private List<Notificacion> notificaciones;
 
+/*
     @JsonIgnoreProperties(value="discusion")
     //@JoinColumn(name="discusion_id", foreignKey = @ForeignKey(name = "fk_pregunta_discusion"))
     @OneToOne(mappedBy="pregunta")
     private Discusion discusion;
+*/
 
 
     public Pregunta() {
     }
 
-    public Pregunta(Long id, String titulo, String descripcion, LocalDateTime fecha, Categoria categoria) {
+    public Pregunta(Long id, String titulo, String descripcion, Categoria categoria) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
-        this.fecha = fecha;
+        this.fecha = LocalDateTime.now();
         this.categoria = categoria;
+        this.fijado = false;
+
     }
 
     public Long getId() {
@@ -108,6 +123,14 @@ public class Pregunta {
         this.categoria = categoria;
     }
 
+    public Boolean getFijado() {
+        return fijado;
+    }
+
+    public void setFijado(Boolean fijado) {
+        this.fijado = fijado;
+    }
+
     public Usuario getUsuario() {
         return usuario;
     }
@@ -116,13 +139,13 @@ public class Pregunta {
         this.usuario = usuario;
     }
 
-    public Curso getCurso() {
+   /* public Curso getCurso() {
         return curso;
     }
 
     public void setCurso(Curso curso) {
         this.curso = curso;
-    }
+    }*/
 
     public Tema getTema() {
         return tema;
@@ -132,12 +155,12 @@ public class Pregunta {
         this.tema = tema;
     }
 
-    public Voto getVoto() {
-        return voto;
+    public List<Voto> getVotos() {
+        return votos;
     }
 
-    public void setVoto(Voto voto) {
-        this.voto = voto;
+    public void setVotos(List<Voto> votos) {
+        this.votos = votos;
     }
 
     public List<Respuesta> getRespuestas() {
@@ -146,6 +169,7 @@ public class Pregunta {
 
     public void setRespuestas(List<Respuesta> respuestas) {
         this.respuestas = respuestas;
+
     }
 
     public List<Notificacion> getNotificaciones() {
@@ -156,13 +180,14 @@ public class Pregunta {
         this.notificaciones = notificaciones;
     }
 
-    public Discusion getDiscusion() {
+/*    public Discusion getDiscusion() {
         return discusion;
     }
 
     public void setDiscusion(Discusion discusion) {
         this.discusion = discusion;
-    }
+    }*/
+
 
     @Override
     public String toString() {
@@ -173,12 +198,12 @@ public class Pregunta {
                 ", fecha=" + fecha +
                 ", categoria=" + categoria +
                 ", usuario=" + usuario +
-                ", curso=" + curso +
+    /*            ", curso=" + curso +*/
                 ", tema=" + tema +
-                ", voto=" + voto +
+                ", voto=" + votos +
                 ", respuestas=" + respuestas +
                 ", notificaciones=" + notificaciones +
-                ", discusion=" + discusion +
+/*                ", discusion=" + discusion +*/
                 '}';
     }
 }
